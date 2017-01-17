@@ -9,7 +9,7 @@ haskell: backend/*.hs
 	stack build
 
 run: all
-	stack exec servant-elm-poc
+	stack exec functional-roastery
 
 clean:
 	-rm -r static/app.js elm-stuff/ 

@@ -1,6 +1,6 @@
 {
-  "name": "servant-elm-poc",
-  "description": "boilerplate for running servant + elm on heroku",
+  "name": "functional-roastery",
+  "description": "Coffee roasting management software",
   "logo": "",
   "repository": "",
   "buildpacks": [

@@ -1,7 +1,7 @@
 {
     "version": "1.0.0",
-    "summary": "Boilerplate for heroku app with servant + elm",
-    "repository": "https://github.com/powermosfet/servant-elm-poc.git",
+    "summary": "Coffee roasting management software",
+    "repository": "https://github.com/powermosfet/functional-roastery.git",
     "license": "BSD3",
     "source-directories": [
         "frontend/"

@@ -1,9 +1,5 @@
-_servant-elm-poc_
-=================
+Functional Roastery
+===================
 
-A boilerplate repo for running servant + elm on heroku
+Coffee roasting management software
 
-#Heroku setup:
-
-    $ heroku buildpacks:set https://github.com/srid/heroku-buildpack-elm
-    $ heroku buildpacks:add --index 2 https://github.com/mfine/heroku-buildpack-stack

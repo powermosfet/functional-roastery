@@ -1,1 +1,1 @@
-web: servant-elm-poc
+web: functional-roastery
