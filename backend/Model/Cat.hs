@@ -9,7 +9,6 @@
 
 module Cat where
 
--- import Database.Persist
 import Database.Persist.TH
 import Data.Aeson
 
