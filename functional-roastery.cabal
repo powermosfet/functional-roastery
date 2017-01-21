@@ -11,20 +11,24 @@ executable functional-roastery
                       OverloadedStrings,
                       TypeFamilies,
                       TypeOperators
-  ghc-options:        -O2 -Wall -Werror -threaded -ibackend
+  ghc-options:        -O2 -Wall -threaded -ibackend
   build-depends:      base,
                       aeson,
+                      bytestring,
                       servant,
                       servant-server,
+                      parsec,
                       persistent,
                       persistent-template,
                       persistent-sqlite,
                       persistent-postgresql,
+                      pwstore-fast,
                       regex-posix,
                       string-conversions,
                       monad-logger,
                       stm,
                       text,
                       transformers,
+                      unordered-containers,
                       wai,
                       warp

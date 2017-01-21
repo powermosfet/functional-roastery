@@ -10,7 +10,7 @@ import Api
 main :: IO ()
 main = do
     hSetBuffering stdout LineBuffering
-    env <- getEnvironment
+    env <- getEnvironment 
     let config = fromEnvironment env 
     let port = configServerPort config
     run port =<< mkApp config
