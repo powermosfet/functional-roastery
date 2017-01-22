@@ -15,7 +15,6 @@ import Servant
 import Database.Persist.Sql
 import Database.Persist.TH
 import Data.Aeson
-import Data.Int
 import Control.Monad.IO.Class
 import Control.Monad
 
@@ -51,8 +50,8 @@ instance HasOwner Variety where
 
 type VarietyApi = "variety" :> Get '[JSON] [Entity Variety]
              :<|> "variety" :> ReqBody '[JSON] Variety :> Post '[JSON] (Entity Variety)
-             :<|> "variety" :> Capture "varietyId" Int64 :> Get '[JSON] (Maybe (Entity Variety))
-             :<|> "variety" :> Capture "varietyId" Int64 :> ReqBody '[JSON] Variety :> Put '[JSON] (Maybe (Entity Variety))
+             :<|> "variety" :> Capture "varietyId" (Key Variety) :> Get '[JSON] (Maybe (Entity Variety))
+             :<|> "variety" :> Capture "varietyId" (Key Variety) :> ReqBody '[JSON] Variety :> Put '[JSON] (Maybe (Entity Variety))
              :<|> "variety" :> Capture "varietyId" (Key Variety) :> Delete '[JSON] String
 
 varietyServer :: ConnectionPool -> Entity User -> Server VarietyApi
@@ -74,17 +73,15 @@ postVariety pool (Entity userKey _) v = flip runSqlPersistMPool pool $ do
     key <- insert variety
     return $ Entity key variety
 
-getVariety :: ConnectionPool -> Entity User -> Int64 -> IO (Maybe (Entity Variety))
-getVariety pool (Entity userKey _) varietyId = flip runSqlPersistMPool pool $ do
-    let varietyKey = toSqlKey varietyId
+getVariety :: ConnectionPool -> Entity User -> Key Variety -> IO (Maybe (Entity Variety))
+getVariety pool (Entity userKey _) varietyKey = flip runSqlPersistMPool pool $ do
     mVariety <- get varietyKey
     if checkOwner mVariety userKey
         then return $ fmap (Entity varietyKey) mVariety
         else return Nothing
 
-putVariety :: ConnectionPool -> Entity User -> Int64 -> Variety -> IO (Maybe (Entity Variety))
-putVariety pool (Entity userKey _) varietyId variety = flip runSqlPersistMPool pool $ do
-    let varietyKey = toSqlKey varietyId
+putVariety :: ConnectionPool -> Entity User -> Key Variety -> Variety -> IO (Maybe (Entity Variety))
+putVariety pool (Entity userKey _) varietyKey variety = flip runSqlPersistMPool pool $ do
     let newVariety = variety { varietyOwner = Just userKey }
     mOldVariety <- get varietyKey
     if checkOwner mOldVariety userKey
