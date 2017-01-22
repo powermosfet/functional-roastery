@@ -17,7 +17,6 @@ import Database.Persist.TH
 import Data.Aeson
 import Crypto.PasswordStore
 import Control.Monad.IO.Class
-import Data.Int
 
 import UrlHelpers
 
@@ -57,13 +56,13 @@ registerServer pool = postUserH
     where
         postUserH user = liftIO (postUser pool user)
 
-type UserApi = "user" :> "me" :> Get '[JSON] (Maybe (Entity User))
+type UserApi = "user" :> "me" :> Get '[JSON] (Entity User)
 
-userServer :: ConnectionPool -> User -> Server UserApi
-userServer pool user = liftIO (getUser pool user)
+userServer :: ConnectionPool -> Entity User -> Server UserApi
+userServer _ user = liftIO (getUser user)
 
-getUser :: ConnectionPool -> User -> IO (Maybe (Entity User))
-getUser pool (User username _) = flip runSqlPersistMPool pool $ selectFirst [UserUsername ==. username] []
+getUser :: Entity User -> IO (Entity User)
+getUser = return
 
 postUser :: ConnectionPool -> NewUser -> IO (Maybe (Entity User))
 postUser pool (NewUser username password) = do
@@ -79,3 +78,9 @@ postUser pool (NewUser username password) = do
                     Just person -> return $ Just $ Entity key person
                     _ -> return Nothing
             Just _ -> return Nothing
+
+class HasOwner a where
+    getOwner :: a -> Maybe (Key User)
+
+checkOwner :: (HasOwner a) => Maybe a -> Key User -> Bool
+checkOwner o userKey = maybe False (== userKey) (o >>= getOwner) 

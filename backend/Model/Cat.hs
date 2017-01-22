@@ -42,8 +42,8 @@ instance ToJSON (Entity Cat) where
 type CatApi = "cat" :> Get '[JSON] [Entity Cat]
          :<|> "cat" :> ReqBody '[JSON] Cat :> Post '[JSON] (Maybe (Key Cat))
 
-catServer :: ConnectionPool -> User -> Server CatApi
-catServer pool user = getCatsH :<|> postCatH
+catServer :: ConnectionPool -> Entity User -> Server CatApi
+catServer pool _ = getCatsH :<|> postCatH
     where
         getCatsH  = liftIO (getCats pool)
         postCatH cat = liftIO (postCat pool cat)

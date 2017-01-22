@@ -11,7 +11,7 @@ executable functional-roastery
                       OverloadedStrings,
                       TypeFamilies,
                       TypeOperators
-  ghc-options:        -O2 -Wall -threaded -ibackend
+  ghc-options:        -O2 -Wall -Werror -threaded -ibackend
   build-depends:      base,
                       aeson,
                       bytestring,
