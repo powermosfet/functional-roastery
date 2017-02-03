@@ -7,8 +7,8 @@ import Database.Persist.Postgresql
 import Data.String.Conversions
 import Control.Monad.Logger (runStderrLoggingT)
 
-import DbConfig
-import DbUrl
+import Config.DbConfig
+import Config.DbUrl
 
 data Config = Config 
     { configServerPort :: Int
