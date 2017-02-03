@@ -5,15 +5,22 @@ import Database.Persist.Sql
 import Network.Wai
 
 import Auth
-import Model.User
-import Model.Cat
-import Model.Variety
+import Model
+import Api.User
+import Api.Storage
+import Api.Customer
+import Api.Account
+import Api.Order
 import Config
 
+type MyAuth = BasicAuth "my-realm" (Entity User)
+
 type MyAPI = RegisterApi
-        :<|> BasicAuth "my-realm" (Entity User) :> UserApi
-        :<|> BasicAuth "my-realm" (Entity User) :> CatApi
-        :<|> BasicAuth "my-realm" (Entity User) :> VarietyApi
+        :<|> MyAuth :> UserApi
+        :<|> MyAuth :> StorageApi
+        :<|> MyAuth :> CustomerApi
+        :<|> MyAuth :> AccountApi
+        :<|> MyAuth :> OrderApi
         :<|> Raw
 
 myAPI :: Proxy MyAPI
@@ -23,17 +30,18 @@ myAPI =
 server :: ConnectionPool -> Server MyAPI
 server pool = registerServer pool
          :<|> userServer pool
-         :<|> catServer pool
-         :<|> varietyServer pool
+         :<|> storageServer pool
+         :<|> customerServer pool
+         :<|> accountServer pool
+         :<|> orderServer pool
          :<|> serveDirectory "static/"
  
 mkApp :: Config -> IO Application
 mkApp cfg = do
     pool <- makeDbPool cfg
-    runSqlPool (runMigration migrateUser) pool
-    runSqlPool (runMigration migrateCat) pool
-    runSqlPool (runMigration migrateVariety) pool
+    runSqlPool (runMigration migrateAll) pool
     return $ app pool
 
 app :: ConnectionPool -> Application
 app pool = serveWithContext myAPI (basicAuthServerContext pool) (server pool)
+

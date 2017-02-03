@@ -70,5 +70,5 @@ toConnectionString PostgresqlConfig
                  ]
     in
         BS.pack $ unwords $ zipWith (++) fields values
-toConnectionString _ = ""
+toConnectionString x = error $ "toConnection string only makes sense for posqgresql! Receved: " ++ show x
     
