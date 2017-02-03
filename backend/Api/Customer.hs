@@ -4,7 +4,6 @@ module Api.Customer where
 
 import Servant
 import Database.Persist.Sql
-import Control.Monad
 import Control.Monad.IO.Class
 
 import Model
@@ -51,6 +50,9 @@ customerServer pool (Entity userKey _) = getCustomers :<|> postCustomer :<|> get
         deleteCustomer :: CustomerId -> Handler String
         deleteCustomer customerId = do
             mOldCustomer <- io pool $ get customerId
-            when (checkOwner mOldCustomer userKey) $
+            let ownerOk = checkOwner mOldCustomer userKey
+            if ownerOk 
+            then do
                 io pool $ delete customerId 
-            throwError err400
+                return ""
+            else throwError err400
