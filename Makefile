@@ -11,8 +11,10 @@ haskell: backend/*.hs haskell-clean
 haskell-clean:
 	stack clean
 
+elm-clean:
+	-rm -r static/app.js elm-stuff/ 
+
 run: all
 	stack exec functional-roastery
 
-clean: haskell-clean
-	-rm -r static/app.js elm-stuff/ 
+clean: elm-clean haskell-clean
