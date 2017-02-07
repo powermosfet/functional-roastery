@@ -16,75 +16,69 @@ type BatchApi = "batch" :> Get '[JSON] [Entity Batch]
            :<|> "batch" :> Capture "key" (Key Batch) :> Delete '[JSON] String
 
 batchServer :: ConnectionPool -> Entity User -> OrderId -> Server BatchApi
-batchServer pool user order = getListH :<|> createH :<|> getSingleH :<|> changeH :<|> deleteH
+batchServer pool (Entity userId _) orderId = getBatches :<|> postBatch :<|> getBatch :<|> putBatch :<|> deleteBatch
     where
-        getListH             = liftIO (getBatches  pool user order)
-        createH obj          = liftIO (postBatch   pool user order obj)
-        getSingleH key       = liftIO (getBatch    pool user order key)
-        changeH key obj      = liftIO (putBatch    pool user order key obj)
-        deleteH key          = liftIO (deleteBatch pool user order key)
+        io pool' action = liftIO $ runSqlPersistMPool action pool'
 
-checkOrder :: ConnectionPool -> UserId -> OrderId -> IO Bool
-checkOrder pool userId orderId = liftIO $ flip runSqlPersistMPool pool $ do
-    mOrder <- get orderId
-    return $ maybe False ((== userId) . orderOwner) mOrder
+        checkOrder :: IO Bool
+        checkOrder = do
+            mOrder <- io pool $ get orderId
+            return $ maybe False ((== userId) . orderOwner) mOrder
 
-checkStorage :: ConnectionPool -> UserId -> StorageId -> IO Bool
-checkStorage pool userId storageId = liftIO $ flip runSqlPersistMPool pool $ do
-    mStorage <- get storageId
-    return $ maybe False ((== userId) . storageOwner) mStorage
+        checkStorage :: StorageId -> IO Bool
+        checkStorage storageId = do
+            mStorage <- io pool $ get storageId
+            return $ maybe False ((== userId) . storageOwner) mStorage
 
-getBatches :: ConnectionPool -> Entity User -> OrderId -> IO [Entity Batch]
-getBatches pool (Entity userId _) orderId = do
-    orderOk <- checkOrder pool userId orderId
-    flip runSqlPersistMPool pool $
-        if orderOk
-        then selectList [ BatchOrder ==. orderId ] []
-        else return []
-
-postBatch :: ConnectionPool -> Entity User -> OrderId -> Batch -> IO (Maybe (Entity Batch))
-postBatch pool (Entity userId _) orderId batch = do
-    orderOk <- checkOrder pool userId orderId
-    storageOk <- checkStorage pool userId $ batchStorage batch
-    flip runSqlPersistMPool pool $
-        if orderOk && storageOk
-        then do
-            let newBatch = batch { batchOrder = orderId }
-            key <- insert newBatch
-            return $ Just $ Entity key newBatch 
-        else return Nothing
-
-getBatch :: ConnectionPool -> Entity User -> OrderId -> Key Batch -> IO (Maybe (Entity Batch))
-getBatch pool (Entity userId _) _ batchId = do
-    mBatch <- flip runSqlPersistMPool pool $ get batchId
-    case mBatch of
-        (Just batch) -> do
-            orderOk <- checkOrder pool userId (batchOrder batch)
+        getBatches :: Handler [Entity Batch]
+        getBatches = do
+            orderOk <- liftIO checkOrder 
             if orderOk
-            then return $ mBatch >>= (Just . Entity batchId)
-            else return Nothing
-        _ -> return Nothing
+            then io pool $ selectList [ BatchOrder ==. orderId ] []
+            else throwError err403
 
-putBatch :: ConnectionPool -> Entity User -> OrderId -> Key Batch -> Batch -> IO (Maybe (Entity Batch))
-putBatch pool (Entity userId _) orderId batchId batch = do
-    mOldBatch <- flip runSqlPersistMPool pool $ get batchId
-    case mOldBatch of
-        Just oldBatch -> do
-            orderOk <- checkOrder pool userId (batchOrder oldBatch) 
-            if orderOk 
-            then do
-                let newBatch = batch { batchOrder = orderId }
-                flip runSqlPersistMPool pool $ replace batchId newBatch
-                return $ Just $ Entity batchId newBatch
-            else return Nothing
-        _ -> return Nothing
+        postBatch :: Batch -> Handler (Maybe (Entity Batch))
+        postBatch batch = do
+            orderOk <- liftIO checkOrder 
+            storageOk <- liftIO $ checkStorage $ batchStorage batch
+            if orderOk && storageOk
+                then do
+                    let newBatch = batch { batchOrder = orderId }
+                    key <- io pool $ insert newBatch
+                    return $ Just $ Entity key newBatch 
+                else throwError err403
 
-deleteBatch :: ConnectionPool -> Entity User -> OrderId -> Key Batch -> IO String
-deleteBatch pool (Entity userId _) _ batchId = do
-    mOldBatch <- flip runSqlPersistMPool pool $ get batchId
-    _ <- case mOldBatch of
-        Just oldBatch -> do
-            orderOk <- checkOrder pool userId (batchOrder oldBatch)
-            when orderOk $ flip runSqlPersistMPool pool $ delete batchId 
-        _ -> return ()
-    return ""
+        getBatch :: Key Batch -> Handler (Maybe (Entity Batch))
+        getBatch batchId = do
+            mBatch <- io pool $ get batchId
+            case mBatch of
+                (Just _) -> do
+                    orderOk <- liftIO checkOrder 
+                    if orderOk
+                    then return $ mBatch >>= (Just . Entity batchId)
+                    else return Nothing
+                _ -> return Nothing
+
+        putBatch :: Key Batch -> Batch -> Handler (Maybe (Entity Batch))
+        putBatch batchId batch = do
+            mOldBatch <- io pool $ get batchId
+            case mOldBatch of
+                Just _ -> do
+                    orderOk <- liftIO checkOrder 
+                    if orderOk 
+                    then do
+                        let newBatch = batch { batchOrder = orderId }
+                        io pool $ replace batchId newBatch
+                        return $ Just $ Entity batchId newBatch
+                    else return Nothing
+                _ -> return Nothing
+
+        deleteBatch :: Key Batch -> Handler String
+        deleteBatch batchId = do
+            mOldBatch <- io pool $ get batchId
+            _ <- case mOldBatch of
+                Just _ -> do
+                    orderOk <- liftIO checkOrder
+                    when orderOk $ io pool $ delete batchId 
+                _ -> throwError err404
+            return ""
