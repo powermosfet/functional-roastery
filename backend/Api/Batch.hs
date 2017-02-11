@@ -9,11 +9,11 @@ import Control.Monad
 
 import Model
 
-type BatchApi = "batch" :> Get '[JSON] [Entity Batch]
-           :<|> "batch" :> ReqBody '[JSON] Batch :> Post '[JSON] (Maybe (Entity Batch))
-           :<|> "batch" :> Capture "key" (Key Batch) :> Get '[JSON] (Maybe (Entity Batch))
-           :<|> "batch" :> Capture "key" (Key Batch) :> ReqBody '[JSON] Batch :> Put '[JSON] (Maybe (Entity Batch))
-           :<|> "batch" :> Capture "key" (Key Batch) :> Delete '[JSON] String
+type BatchApi = "batch"                                                       :> Get    '[JSON] [Entity Batch]
+           :<|> "batch"                              :> ReqBody '[JSON] Batch :> Post   '[JSON] (Maybe (Entity Batch))
+           :<|> "batch" :> Capture "key" (Key Batch)                          :> Get    '[JSON] (Maybe (Entity Batch))
+           :<|> "batch" :> Capture "key" (Key Batch) :> ReqBody '[JSON] Batch :> Put    '[JSON] (Maybe (Entity Batch))
+           :<|> "batch" :> Capture "key" (Key Batch)                          :> Delete '[JSON] String
 
 batchServer :: ConnectionPool -> Entity User -> OrderId -> Server BatchApi
 batchServer pool (Entity userId _) orderId = getBatches :<|> postBatch :<|> getBatch :<|> putBatch :<|> deleteBatch
@@ -51,13 +51,12 @@ batchServer pool (Entity userId _) orderId = getBatches :<|> postBatch :<|> getB
         getBatch :: Key Batch -> Handler (Maybe (Entity Batch))
         getBatch batchId = do
             mBatch <- io pool $ get batchId
-            case mBatch of
-                (Just _) -> do
-                    orderOk <- liftIO checkOrder 
-                    if orderOk
-                    then return $ mBatch >>= (Just . Entity batchId)
-                    else return Nothing
-                _ -> return Nothing
+            orderOk <- liftIO checkOrder 
+            if orderOk
+            then return $ do
+                batch <- mBatch
+                return $ Entity batchId batch
+            else return Nothing
 
         putBatch :: Key Batch -> Batch -> Handler (Maybe (Entity Batch))
         putBatch batchId batch = do
