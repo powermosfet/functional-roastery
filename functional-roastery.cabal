@@ -34,3 +34,38 @@ executable functional-roastery
                       unordered-containers,
                       wai,
                       warp
+
+executable functional-roastery-test
+  main-is:            Test.hs
+  hs-source-dirs:     backend/test
+  default-language:   Haskell2010
+  default-extensions: DataKinds
+                    , DeriveGeneric
+                    , OverloadedStrings
+                    , TypeFamilies
+                    , TypeOperators
+  ghc-options:        -O2 -Wall -Werror -threaded -ibackend
+  build-depends:      QuickCheck
+
+                    , base
+                    , aeson
+                    , bytestring
+                    , esqueleto
+                    , servant
+                    , servant-server
+                    , parsec
+                    , persistent
+                    , persistent-template
+                    , persistent-sqlite
+                    , persistent-postgresql
+                    , pwstore-fast
+                    , regex-posix
+                    , string-conversions
+                    , monad-logger
+                    , stm
+                    , text
+                    , time
+                    , transformers
+                    , unordered-containers
+                    , wai
+                    , warp

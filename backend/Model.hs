@@ -26,26 +26,26 @@ User
    password BS.ByteString
    cashBalance Double
    UniqueUsername username
-   deriving Show
+   deriving Show Eq
 Customer json
     name String
     email String
     payable Double
     owner UserId
-    deriving Show
+    deriving Show Eq
 Storage json
     country String
     variety String
     quantity Int
     value Double
     owner UserId 
-    deriving Show
+    deriving Show Eq
 Order json
-    order OrderId
+    customer CustomerId
     timestamp UTCTime
     comment String
     owner UserId
-    deriving Show
+    deriving Show Eq
 Batch json
     order OrderId
     timestamp UTCTime
@@ -53,7 +53,7 @@ Batch json
     quantity Int
     cost Double
     roastLevel String
-    deriving Show
+    deriving Show Eq
 |]
 
 class HasOwner a where
