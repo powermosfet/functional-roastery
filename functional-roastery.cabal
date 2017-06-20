@@ -4,7 +4,22 @@ build-type:         Simple
 cabal-version:      >= 1.20
 
 executable functional-roastery
-  main-is:            backend/Main.hs
+  main-is:            Main.hs
+  hs-source-dirs:     backend
+  other-modules:      Api
+                    , Api.Account
+                    , Api.Batch
+                    , Api.Customer
+                    , Api.Order
+                    , Api.Purchase
+                    , Api.Storage
+                    , Api.User
+                    , Config
+                    , Config.DbConfig
+                    , Config.DbUrl
+                    , Model
+                    , Model.ModelHelpers
+                    , Auth
   default-language:   Haskell2010
   default-extensions: DataKinds,
                       DeriveGeneric,
@@ -37,6 +52,7 @@ executable functional-roastery
 
 executable functional-roastery-test
   main-is:            Test.hs
+  other-modules:      RoundTrip
   hs-source-dirs:     backend/test
   default-language:   Haskell2010
   default-extensions: DataKinds
