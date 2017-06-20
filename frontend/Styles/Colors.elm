@@ -1,11 +1,18 @@
 module Styles.Colors exposing (..)
 
-import Css exposing (..)
+import Css
 
 
+background : Css.Color
 background =
-    hex "FFFFFF"
+    Css.hex "FFFFFF"
 
 
+foreground : Css.Color
 foreground =
-    hex "000000"
+    Css.hex "000000"
+
+
+userWidget : Css.Color
+userWidget =
+    Css.hex "AAAAFF"
