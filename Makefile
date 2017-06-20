@@ -18,3 +18,12 @@ run: all
 	stack exec functional-roastery
 
 clean: elm-clean haskell-clean
+
+live: elm
+	elm-live --dir=static frontend\Main.elm --output static\app.js --debug
+
+test-build: backend/test/*.hs
+	stack test
+
+test: test-build
+	stack exec functional-roastery-test
