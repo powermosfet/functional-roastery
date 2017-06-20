@@ -1,8 +1,8 @@
 module Message exposing (..)
 
 import Http
-import Model exposing (Cat)
+import Model exposing (Customer)
 
 
 type Msg
-    = NewCats (Result Http.Error (List Cat))
+    = NewCustomerList (Result Http.Error (List Customer))

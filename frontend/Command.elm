@@ -1,23 +1,25 @@
 module Command exposing (..)
 
 import Http
-import Json.Decode exposing (..)
+import Json.Decode exposing (Decoder, map, map2, field, string, list)
 import Message exposing (Msg(..))
-import Model exposing (Cat)
+import Model exposing (Customer)
 
 
-catDecoder : Decoder Cat
-catDecoder =
-    map Cat (field "name" string)
+customerDecoder : Decoder Customer
+customerDecoder =
+    map2 Customer
+        (field "name" string)
+        (field "email" string)
 
 
-getCats : Cmd Msg
-getCats =
+getCustomers : Cmd Msg
+getCustomers =
     let
         url =
-            "cats"
+            "customer"
 
         request =
-            Http.get url (list catDecoder)
+            Http.get url (list customerDecoder)
     in
-        Http.send NewCats request
+        Http.send NewCustomerList request
