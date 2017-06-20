@@ -13,7 +13,7 @@ authCheck pool =
         check (BasicAuthData username password) = flip runSqlPersistMPool pool $ do
             mUser <- selectFirst [UserUsername ==. BS.unpack username] []
             case mUser of
-                Just user@(Entity _ (User _ hash _)) -> if verifyPassword password hash
+                Just user@(Entity _ (User _ hash _ _ _)) -> if verifyPassword password hash
                     then return (Authorized user)
                     else return BadPassword
                 _ -> return Unauthorized

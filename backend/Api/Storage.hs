@@ -30,7 +30,8 @@ getStorages pool (Entity userKey _) = flip runSqlPersistMPool pool $
 
 postStorage :: ConnectionPool -> Entity User -> IO (Entity Storage)
 postStorage pool (Entity userKey _) = flip runSqlPersistMPool pool $ do
-    let storage = Storage "" "" 0 0 userKey 
+    value <- insert $ Account 0 "Storage value"
+    let storage = Storage "" "" 0 value userKey 
     key <- insert storage
     return $ Entity key storage
 

@@ -24,7 +24,9 @@ customerServer pool (Entity userKey _) = getCustomers :<|> postCustomer :<|> get
 
         postCustomer :: Customer -> Handler (Entity Customer)
         postCustomer postedCustomer = do
-            let customer = postedCustomer { customerOwner = userKey, customerPayable = 0 }
+            payable <- io pool $ insert $ Account 0 (customerName postedCustomer ++ ": payable")
+            assets <- io pool $ insert $ Account 0 (customerName postedCustomer ++ ": assets")
+            let customer = postedCustomer { customerOwner = userKey, customerPayable = payable, customerAssets = assets }
             key <- io pool $ insert customer
             return $ Entity key customer 
 

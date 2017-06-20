@@ -44,7 +44,10 @@ postUser :: ConnectionPool -> NewUser -> IO (Maybe User)
 postUser pool (NewUser username password) = do
     hash <- makePassword (BS.pack password) pwStrength
     flip runSqlPersistMPool pool $ do
-        let user = User username hash 0
+        cash <- insert $ Account 0 (username ++ ": cash")
+        receivable <- insert $ Account 0 (username ++ ": accounts receivable")
+        profit <- insert $ Account 0 (username ++ ": profit")
+        let user = User username hash cash receivable profit
         exists <- selectFirst [UserUsername ==. username] []
         case exists of
             Nothing -> do
