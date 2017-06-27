@@ -1,16 +1,15 @@
 module Main exposing (main)
 
-import Html
 import Init
 import Model
 import Message
 import Update
 import View
+import Navigation
 
 
-main : Program Never Model.Model Message.Msg
 main =
-    Html.program
+    Navigation.program Message.NewUrl
         { init = Init.init
         , view = View.view
         , update = Update.update

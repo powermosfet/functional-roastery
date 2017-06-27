@@ -1,14 +1,16 @@
 module Init exposing (..)
 
-import RemoteData exposing (RemoteData(..))
-import Model exposing (Model, Page(..))
 import Message exposing (Msg)
+import Model exposing (Model)
+import Navigation
+import RemoteData exposing (RemoteData(..))
+import Route exposing (Route(..))
 
 
-init : ( Model, Cmd Msg )
-init =
+init : Navigation.Location -> ( Model, Cmd Msg )
+init url =
     ( { credentials = Nothing
-      , page = Customers
+      , route = Route.parse url
       , customers = NotAsked
       }
     , Cmd.none

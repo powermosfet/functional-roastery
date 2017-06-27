@@ -1,16 +1,34 @@
 module View exposing (..)
 
-import Html exposing (Html, node, div, h1, p, ul, li, text, header, aside, nav)
-import Html.CssHelpers
-import Model exposing (Model, Page(..))
-import Message exposing (Msg)
 import Css
-import Styles.Styles as Styles
-import Styles.Classes as Class
+import Html
+    exposing
+        ( Html
+        , node
+        , div
+        , h1
+        , p
+        , ul
+        , li
+        , text
+        , header
+        , a
+        , aside
+        , nav
+        )
+import Html.Attributes exposing (href)
+import Html.CssHelpers
+import Message exposing (Msg)
+import Model exposing (Model)
+import Pages.Home
 import Pages.Customers
 import Pages.Orders
-import Pages.Varieties
 import Pages.Storages
+import Pages.Varieties
+import Pages.NotFound
+import Route
+import Styles.Classes as Class
+import Styles.Styles as Styles
 
 
 { id, class, classList } =
@@ -29,25 +47,31 @@ view model =
             ]
         , div [ class [ Class.Wrapper ] ]
             [ menu model
-            , pageView model.page model
+            , pageView model.route model
             ]
         ]
 
 
-pageView : Page -> (Model -> Html Msg)
-pageView p =
-    case p of
-        Customers ->
+pageView : Route.Route -> (Model -> Html Msg)
+pageView r =
+    case r of
+        Route.Home ->
+            Pages.Home.view
+
+        Route.CustomerList ->
             Pages.Customers.view
 
-        Orders ->
-            Pages.Orders.view
-
-        Varieties ->
+        Route.VarietyList ->
             Pages.Varieties.view
 
-        Storages ->
+        Route.OrderList ->
+            Pages.Orders.view
+
+        Route.StorageList ->
             Pages.Storages.view
+
+        Route.NotFound ->
+            Pages.NotFound.view
 
 
 appHeader : Model -> Html msg
@@ -59,13 +83,46 @@ appHeader _ =
 
 
 menu : Model -> Html msg
-menu _ =
-    nav [ class [ Class.Menu ] ]
-        [ ul [ class [ Class.MenuList ] ]
-            [ li [ class [ Class.MenuItem ] ] [ text "Home" ]
-            , li [ class [ Class.MenuItem, Class.ModSelected ] ] [ text "Customers" ]
-            , li [ class [ Class.MenuItem ] ] [ text "Varieties" ]
-            , li [ class [ Class.MenuItem ] ] [ text "Storages" ]
-            , li [ class [ Class.MenuItem ] ] [ text "Orders" ]
+menu model =
+    let
+        itemLabel route =
+            case route of
+                Route.Home ->
+                    "Home"
+
+                Route.CustomerList ->
+                    "Customers"
+
+                Route.VarietyList ->
+                    "Varieties"
+
+                Route.OrderList ->
+                    "Orders"
+
+                Route.StorageList ->
+                    "Storages"
+
+                _ ->
+                    ""
+
+        selected route =
+            route == model.route
+
+        classes route =
+            if selected route then
+                [ Class.MenuItem, Class.ModSelected ]
+            else
+                [ Class.MenuItem ]
+
+        item route =
+            a [ class [ Class.MenuLink ], href (Route.toUrl route) ] [ li [ class (classes route) ] [ text (itemLabel route) ] ]
+    in
+        nav [ class [ Class.Menu ] ]
+            [ ul [ class [ Class.MenuList ] ]
+                [ item Route.Home
+                , item Route.CustomerList
+                , item Route.VarietyList
+                , item Route.OrderList
+                , item Route.StorageList
+                ]
             ]
-        ]

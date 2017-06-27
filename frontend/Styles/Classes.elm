@@ -10,6 +10,7 @@ type CssClasses
     | Menu
     | MenuNav
     | MenuList
+    | MenuLink
     | MenuItem
     | Content
     | ModSelected

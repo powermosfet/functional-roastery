@@ -2,6 +2,7 @@ module Model exposing (..)
 
 import RemoteData exposing (RemoteData)
 import Http
+import Route exposing (Route)
 
 
 type alias WebData a =
@@ -20,15 +21,8 @@ type alias Customer =
     }
 
 
-type Page
-    = Customers
-    | Orders
-    | Varieties
-    | Storages
-
-
 type alias Model =
     { credentials : Maybe Credentials
-    , page : Page
+    , route : Route
     , customers : WebData (List Customer)
     }

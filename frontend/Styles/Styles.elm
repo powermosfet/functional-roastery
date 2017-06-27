@@ -3,6 +3,7 @@ module Styles.Styles exposing (..)
 import Css
     exposing
         ( Stylesheet
+        , active
         , alignItems
         , auto
         , backgroundColor
@@ -31,8 +32,10 @@ import Css
         , fontSize
         , fontWeight
         , hover
+        , inherit
         , justifyContent
         , left
+        , link
         , listStyle
         , margin
         , margin2
@@ -56,7 +59,9 @@ import Css
         , stretch
         , stylesheet
         , textAlign
+        , textDecoration
         , textShadow4
+        , visited
         , withClass
         , wrap
         , zero
@@ -133,13 +138,27 @@ css =
             , justifyContent flexStart
             , alignItems flexStart
             ]
+        , class Class.MenuLink
+            [ link
+                [ textDecoration none
+                , color inherit
+                ]
+            , visited
+                [ textDecoration none
+                , color inherit
+                ]
+            , active
+                [ textDecoration none
+                , color inherit
+                ]
+            , hover
+                [ textShadow4 zero zero (Css.rem 0.7) Color.palette3
+                ]
+            ]
         , class Class.MenuItem
             [ margin4 (Css.rem 1) zero zero zero
             , padding2 (Css.rem 0.5) (Css.rem 1)
             , cursor pointer
-            , hover
-                [ textShadow4 zero zero (Css.rem 0.7) Color.palette3
-                ]
             , withClass Class.ModSelected
                 [ borderBottom3 (Css.rem 0.2) solid Color.palette1
                 ]
