@@ -1,6 +1,6 @@
 module View exposing (..)
 
-import Html exposing (Html, node, div, h1, p, ul, li, text)
+import Html exposing (Html, node, div, h1, p, ul, li, text, header, aside, nav)
 import Html.CssHelpers
 import Model exposing (Model, Page(..))
 import Message exposing (Msg)
@@ -21,9 +21,14 @@ view : Model -> Html Msg
 view model =
     div []
         [ node "style" [] [ Css.compile [ Styles.css ] |> .css |> text ]
+        , header [ class [ Class.Header ] ]
+            [ div [ class [ Class.Wrapper, Class.HeaderWrapper ] ]
+                [ h1 [ class [ Class.HeaderTitle ] ] [ text "The Functional Roastery" ]
+                , div [ class [ Class.UserWidget ] ] [ text "Log in" ]
+                ]
+            ]
         , div [ class [ Class.Wrapper ] ]
-            [ header model
-            , menu model
+            [ menu model
             , pageView model.page model
             ]
         ]
@@ -45,8 +50,8 @@ pageView p =
             Pages.Storages.view
 
 
-header : Model -> Html msg
-header _ =
+appHeader : Model -> Html msg
+appHeader _ =
     div [ class [ Class.Header ] ]
         [ h1 [ class [ Class.HeaderTitle ] ] [ text "The Functional Roastery" ]
         , div [ class [ Class.UserWidget ] ] [ text "Log in" ]
@@ -55,4 +60,12 @@ header _ =
 
 menu : Model -> Html msg
 menu _ =
-    div [] []
+    nav [ class [ Class.Menu ] ]
+        [ ul [ class [ Class.MenuList ] ]
+            [ li [ class [ Class.MenuItem ] ] [ text "Home" ]
+            , li [ class [ Class.MenuItem, Class.ModSelected ] ] [ text "Customers" ]
+            , li [ class [ Class.MenuItem ] ] [ text "Varieties" ]
+            , li [ class [ Class.MenuItem ] ] [ text "Storages" ]
+            , li [ class [ Class.MenuItem ] ] [ text "Orders" ]
+            ]
+        ]

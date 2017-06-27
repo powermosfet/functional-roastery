@@ -7,8 +7,17 @@ type CssClasses
     | HeaderTitle
     | UserWidget
     | Main
-    | LeftMenu
-    | LeftMenuNav
-    | LeftMenuList
-    | LeftMenuListItem
+    | Menu
+    | MenuNav
+    | MenuList
+    | MenuItem
     | Content
+    | ModSelected
+    | Page
+    | PageTitle
+    | HeaderWrapper
+    | Table
+    | TableHeader
+    | TableTh
+    | TableTd
+    | TableRow
