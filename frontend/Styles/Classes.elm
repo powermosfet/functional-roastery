@@ -2,23 +2,26 @@ module Styles.Classes exposing (..)
 
 
 type CssClasses
-    = Wrapper
+    = Content
+    | DiscreteLink
+    | FieldSet
     | Header
     | HeaderTitle
-    | UserWidget
+    | HeaderWrapper
+    | InputSubmit
+    | InputText
     | Main
     | Menu
-    | MenuNav
-    | MenuList
-    | MenuLink
     | MenuItem
-    | Content
+    | MenuList
+    | MenuNav
     | ModSelected
     | Page
     | PageTitle
-    | HeaderWrapper
     | Table
     | TableHeader
-    | TableTh
-    | TableTd
     | TableRow
+    | TableTd
+    | TableTh
+    | UserWidget
+    | Wrapper

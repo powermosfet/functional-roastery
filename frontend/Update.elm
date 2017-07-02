@@ -19,9 +19,25 @@ resultToRemoteData result =
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update message model =
-    case message of
-        NewCustomerList result ->
-            ( { model | customers = resultToRemoteData result }, Cmd.none )
+    let
+        n m =
+            ( m, Cmd.none )
 
-        NewUrl url ->
-            ( { model | route = Route.parse url }, Cmd.none )
+        loginForm =
+            model.loginForm
+    in
+        case message of
+            NewCustomerList result ->
+                n { model | customers = resultToRemoteData result }
+
+            NewUrl url ->
+                n { model | route = Route.parse url }
+
+            EnterUsername username ->
+                n { model | loginForm = { loginForm | username = username } }
+
+            EnterPassword password ->
+                n { model | loginForm = { loginForm | password = password } }
+
+            DoLogin ->
+                n model

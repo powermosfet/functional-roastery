@@ -6,5 +6,8 @@ import Navigation
 
 
 type Msg
-    = NewCustomerList (Result Http.Error (List Customer))
+    = DoLogin
+    | NewCustomerList (Result Http.Error (List Customer))
     | NewUrl Navigation.Location
+    | EnterUsername String
+    | EnterPassword String

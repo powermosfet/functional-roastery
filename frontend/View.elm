@@ -21,6 +21,7 @@ import Html.CssHelpers
 import Message exposing (Msg)
 import Model exposing (Model)
 import Pages.Home
+import Pages.Login
 import Pages.Customers
 import Pages.Orders
 import Pages.Storages
@@ -42,7 +43,7 @@ view model =
         , header [ class [ Class.Header ] ]
             [ div [ class [ Class.Wrapper, Class.HeaderWrapper ] ]
                 [ h1 [ class [ Class.HeaderTitle ] ] [ text "The Functional Roastery" ]
-                , div [ class [ Class.UserWidget ] ] [ text "Log in" ]
+                , userWidget model
                 ]
             ]
         , div [ class [ Class.Wrapper ] ]
@@ -57,6 +58,9 @@ pageView r =
     case r of
         Route.Home ->
             Pages.Home.view
+
+        Route.Login ->
+            Pages.Login.view
 
         Route.CustomerList ->
             Pages.Customers.view
@@ -75,11 +79,27 @@ pageView r =
 
 
 appHeader : Model -> Html msg
-appHeader _ =
+appHeader model =
     div [ class [ Class.Header ] ]
         [ h1 [ class [ Class.HeaderTitle ] ] [ text "The Functional Roastery" ]
-        , div [ class [ Class.UserWidget ] ] [ text "Log in" ]
+        , userWidget model
         ]
+
+
+userWidget : Model -> Html msg
+userWidget model =
+    case model.credentials of
+        Just { username, password } ->
+            div [] []
+
+        Nothing ->
+            div [ class [ Class.UserWidget ] ]
+                [ a
+                    [ href (Route.toUrl Route.Login)
+                    , class [ Class.DiscreteLink ]
+                    ]
+                    [ text "Log in" ]
+                ]
 
 
 menu : Model -> Html msg
@@ -115,7 +135,7 @@ menu model =
                 [ Class.MenuItem ]
 
         item route =
-            a [ class [ Class.MenuLink ], href (Route.toUrl route) ] [ li [ class (classes route) ] [ text (itemLabel route) ] ]
+            a [ class [ Class.DiscreteLink ], href (Route.toUrl route) ] [ li [ class (classes route) ] [ text (itemLabel route) ] ]
     in
         nav [ class [ Class.Menu ] ]
             [ ul [ class [ Class.MenuList ] ]

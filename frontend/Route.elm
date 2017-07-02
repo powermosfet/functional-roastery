@@ -16,6 +16,7 @@ import UrlParser
 
 type Route
     = Home
+    | Login
     | CustomerList
     | VarietyList
     | OrderList
@@ -27,6 +28,7 @@ route : Parser (Route -> a) a
 route =
     oneOf
         [ map Home top
+        , map Login (s "login")
         , map CustomerList (s "customers")
         , map VarietyList (s "varieties")
         , map OrderList (s "orders")
@@ -40,20 +42,28 @@ parse loc =
         |> Maybe.withDefault NotFound
 
 
+urlify : List String -> String
+urlify parts =
+    "#/" ++ (String.join "/" parts)
+
+
 toUrl : Route -> String
 toUrl route =
     case route of
+        Login ->
+            urlify [ "login" ]
+
         CustomerList ->
-            "#/customers"
+            urlify [ "customers" ]
 
         VarietyList ->
-            "#/varieties"
+            urlify [ "varieties" ]
 
         OrderList ->
-            "#/orders"
+            urlify [ "orders" ]
 
         StorageList ->
-            "#/storages"
+            urlify [ "storages" ]
 
         _ ->
-            "#"
+            urlify []

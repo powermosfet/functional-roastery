@@ -25,4 +25,5 @@ type alias Model =
     { credentials : Maybe Credentials
     , route : Route
     , customers : WebData (List Customer)
+    , loginForm : Credentials
     }

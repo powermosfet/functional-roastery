@@ -9,6 +9,7 @@ import Css
         , backgroundColor
         , bold
         , border3
+        , borderStyle
         , borderBottom3
         , borderCollapse
         , borderRadius
@@ -18,6 +19,7 @@ import Css
         , class
         , collapse
         , color
+        , column
         , cursor
         , descendants
         , display
@@ -88,21 +90,6 @@ css =
         , body
             [ backgroundColor Color.palette4
             ]
-          -- , class Class.Wrapper
-          --     [ displayFlex
-          --     , maxWidth (px 1200)
-          --     , margin4 (em 2) auto zero auto
-          --     , flexFlow2 row wrap
-          --     , borderRadius (em 0.5)
-          --     , color Color.white
-          --     , backgroundColor Color.palette1
-          --     ]
-          -- , class Class.Wrapper
-          --     [ children
-          --         [ everything
-          --             [ flex2 (num 1) (pct 100) ]
-          --         ]
-          --     ]
         , class Class.Header
             [ backgroundColor Color.palette1
             , boxShadow4 zero (Css.rem 0.5) (Css.rem 1) Color.palette3
@@ -138,7 +125,7 @@ css =
             , justifyContent flexStart
             , alignItems flexStart
             ]
-        , class Class.MenuLink
+        , class Class.DiscreteLink
             [ link
                 [ textDecoration none
                 , color inherit
@@ -151,14 +138,14 @@ css =
                 [ textDecoration none
                 , color inherit
                 ]
-            , hover
-                [ textShadow4 zero zero (Css.rem 0.7) Color.palette3
-                ]
             ]
         , class Class.MenuItem
             [ margin4 (Css.rem 1) zero zero zero
             , padding2 (Css.rem 0.5) (Css.rem 1)
             , cursor pointer
+            , hover
+                [ textShadow4 zero zero (Css.rem 0.7) Color.palette3
+                ]
             , withClass Class.ModSelected
                 [ borderBottom3 (Css.rem 0.2) solid Color.palette1
                 ]
@@ -199,5 +186,26 @@ css =
                 [ backgroundColor Color.palette3
                 , cursor pointer
                 ]
+            ]
+        , class Class.InputText
+            [ fontSize (Css.rem 1.5)
+            , margin2 (Css.rem 1) zero
+            , padding2 (Css.rem 0.5) (Css.rem 1)
+            , border3 (Css.rem 0.05) solid Color.palette1
+            , borderRadius (Css.rem 0.2)
+            ]
+        , class Class.InputSubmit
+            [ fontSize (Css.rem 1.5)
+            , margin2 (Css.rem 1) zero
+            , padding2 (Css.rem 0.5) (Css.rem 1)
+            , border3 (Css.rem 0.05) solid Color.palette1
+            , borderRadius (Css.rem 0.2)
+            , backgroundColor Color.palette3
+            ]
+        , class Class.FieldSet
+            [ displayFlex
+            , flexFlow2 column noWrap
+            , alignItems flexStart
+            , borderStyle none
             ]
         ]
