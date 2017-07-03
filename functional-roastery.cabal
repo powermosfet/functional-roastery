@@ -85,3 +85,41 @@ executable functional-roastery-test
                     , unordered-containers
                     , wai
                     , warp
+
+executable functional-roastery-migrate-unsafe
+  main-is:            MigrateUnsafe.hs
+  other-modules:      Config
+                    , Config.DbConfig
+                    , Config.DbUrl
+                    , Model
+                    , Model.ModelHelpers
+  hs-source-dirs:     backend
+  default-language:   Haskell2010
+  default-extensions: DataKinds
+                    , DeriveGeneric
+                    , OverloadedStrings
+                    , TypeFamilies
+                    , TypeOperators
+  ghc-options:        -O2 -Wall -Werror -threaded -ibackend
+  build-depends:      base
+                    , aeson
+                    , bytestring
+                    , esqueleto
+                    , monad-logger
+                    , parsec
+                    , persistent
+                    , persistent-postgresql
+                    , persistent-sqlite
+                    , persistent-template
+                    , pwstore-fast
+                    , regex-posix
+                    , servant
+                    , servant-server
+                    , stm
+                    , string-conversions
+                    , text
+                    , time
+                    , transformers
+                    , unordered-containers
+                    , wai
+                    , warp
