@@ -20,4 +20,4 @@ main = do
     putStrLn "Using config:"
     print config
     pool <- makeDbPool config
-    runSqlPool (runMigration migrateAll) pool
+    runSqlPool (runMigrationUnsafe migrateAll) pool
