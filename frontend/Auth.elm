@@ -1,13 +1,10 @@
 module Auth exposing (..)
 
-import Http exposing (empty)
+import Http exposing (Request, request, emptyBody, expectJson)
+import BasicAuth exposing (buildAuthorizationHeader)
 import Json.Decode exposing (Decoder, map, map2, field, string, list)
 import Message exposing (Msg(..))
-import Model exposing (Cat, Customer)
-
-
-type Auth
-    = Basic { username : String, password : String }
+import Model exposing (Customer, Credentials)
 
 
 type Verb
@@ -25,17 +22,23 @@ verbString verb =
             "POST"
 
 
-makeRequest : Auth -> Verb -> String -> Task RawError Response
-makeRequest auth verb url =
+makeRequest : Credentials -> Verb -> String -> Decoder a -> Request a
+makeRequest { username, password } verb url decoder =
     let
         headers =
-            case auth of
-                Basic username password ->
-                    [ ( "Authorization", "Basic " ++ buildAuthorizationToken username password ) ]
+            [ buildAuthorizationHeader username password ]
     in
-        defaultSettings
-            { verb = verbString verb
+        request
+            { method = verbString verb
             , headers = headers
             , url = url
-            , body = empty
+            , body = emptyBody
+            , expect = expectJson decoder
+            , timeout = Nothing
+            , withCredentials = True
             }
+
+
+authGet : Credentials -> String -> Decoder a -> Request a
+authGet credentials url decoder =
+    makeRequest credentials Get url decoder

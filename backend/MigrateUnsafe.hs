@@ -9,8 +9,10 @@ import Config
 
 main :: IO ()
 main = do
-    putStrLn "PERFORMING UNSAFE MIGRATION!!!!"
-    putStrLn "*******************************"
+    putStrLn ""
+    putStrLn "********************************"
+    putStrLn "* PERFORMING UNSAFE MIGRATION! *"
+    putStrLn "********************************"
     putStrLn ""
     hSetBuffering stdout LineBuffering
     env <- getEnvironment 

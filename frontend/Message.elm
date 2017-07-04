@@ -1,7 +1,7 @@
 module Message exposing (..)
 
 import Http
-import Model exposing (Customer)
+import Model exposing (Customer, UserProfile)
 import Navigation
 
 
@@ -11,3 +11,4 @@ type Msg
     | NewUrl Navigation.Location
     | EnterUsername String
     | EnterPassword String
+    | LoginComplete (Result Http.Error UserProfile)

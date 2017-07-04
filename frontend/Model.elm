@@ -15,6 +15,12 @@ type alias Credentials =
     }
 
 
+type alias UserProfile =
+    { username : String
+    , id : Int
+    }
+
+
 type alias Customer =
     { name : String
     , email : String
@@ -22,7 +28,11 @@ type alias Customer =
 
 
 type alias Model =
-    { credentials : Maybe Credentials
+    { session :
+        Maybe
+            { credentials : Credentials
+            , profile : UserProfile
+            }
     , route : Route
     , customers : WebData (List Customer)
     , loginForm : Credentials

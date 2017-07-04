@@ -9,7 +9,7 @@ import Route exposing (Route(..))
 
 init : Navigation.Location -> ( Model, Cmd Msg )
 init url =
-    ( { credentials = Nothing
+    ( { session = Nothing
       , route = Route.parse url
       , customers = NotAsked
       , loginForm = Credentials "" ""

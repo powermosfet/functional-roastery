@@ -3,6 +3,7 @@ module Update exposing (..)
 import RemoteData
 import Message exposing (Msg(..))
 import Model exposing (Model)
+import Command exposing (getUserProfile)
 import Route
 import UrlParser exposing (parseHash)
 
@@ -25,6 +26,9 @@ update message model =
 
         loginForm =
             model.loginForm
+
+        session =
+            model.session
     in
         case message of
             NewCustomerList result ->
@@ -40,4 +44,16 @@ update message model =
                 n { model | loginForm = { loginForm | password = password } }
 
             DoLogin ->
-                n model
+                ( model, getUserProfile model.loginForm )
+
+            LoginComplete result ->
+                case result of
+                    Ok profile ->
+                        n
+                            { model
+                                | session = Just { credentials = model.loginForm, profile = profile }
+                                , loginForm = { username = "", password = "" }
+                            }
+
+                    _ ->
+                        n model

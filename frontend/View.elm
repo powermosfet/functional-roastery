@@ -88,8 +88,8 @@ appHeader model =
 
 userWidget : Model -> Html msg
 userWidget model =
-    case model.credentials of
-        Just { username, password } ->
+    case model.session of
+        Just { profile, credentials } ->
             div [] []
 
         Nothing ->
